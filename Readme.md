@@ -37,19 +37,79 @@
 }
 
 ```
+###### Two types of Box Sizing
+
+1. content-box (Default)
+
+```.box {
+  width: 200px;
+  padding: 20px;
+  border: 5px solid black;
+  box-sizing: content-box;
+}
+```
+- Total width = 200 + 40 + 10 = 250px (excluding margin).
+2. border-box
+
+```.box {
+  width: 200px;
+  padding: 20px;
+  border: 5px solid black;
+  box-sizing: border-box;
+}
+```
+- Total width = 200px (excluding margin).
+
+- Why do we use box-sizing: border-box?
+
+Answer:
+- We use box-sizing: border-box to include padding and border within the specified width and height.
+
+- It makes layouts easier to manage and prevents unexpected element size increases.
+
 + Class vs ID
     - Class is reusable; ID is unique and has higher specificity
-
+- HTML:
 ```
-HTML:
 <div class="box"></div>
 <div id="main"></div>
 CSS:
 .box { background: lightblue; }
 #main { background: orange; }
 ```
+##### CSS Specificity
+- CSS Specificity is a set of rules used by the browser to decide which CSS style should be applied when multiple CSS selectors target the same HTML element.
+
+| Selector type | Specificity |
+| :--- | :--- |
+| Inline styles | 1000 |
+| ID selector (`#id`) | 100 |
+| Class, attribute, pseudo-class | 10 |
+| Element, pseudo-element | 1 |
+| Universal selector (`*`) | 0 |
+
+- `!important` overrides normal declarations in the cascade, regardless of ordinary selector specificity.
+```
+<head>
+<style type="text/css" media="all">
+  p {
+    color: red !important;
+  }
+
+  #heading {
+    color: blue;
+  }
+    </style>
+  </head>
+  <body>
+      <p id="heading" class="text">Hello World</p>
+  </body>
+```
+
+
 + Pseudo-class vs Pseudo-element
-    - Pseudo-classes style states; pseudo-elements style parts
+  - Pseudo-class: Selects an element based on its state or position.
+  - Pseudo-element: Styles a specific part of an element or inserts generated content.
 
 ```
 Pseudo-class	Meaning
@@ -157,6 +217,12 @@ Rank	Selector Type	Example
 
 + CSS Positions
     - The position property controls how an element is placed in the page and what it’s positioned relative to
+    - There are 5 main types of CSS positioning:
+        1. static
+        2. relative
+        3. absolute
+        4. fixed
+        5. sticky
     - position: static (Default)
     ```
         .box {
@@ -198,6 +264,7 @@ Rank	Selector Type	Example
     🔹 If no parent is positioned → relative to <html>
   
   - position: fixed
+
   ```
   .navbar {
   position: fixed;
@@ -207,6 +274,7 @@ Rank	Selector Type	Example
   🔹 Positioned relative to viewport
   🔹 Stays fixed on scroll
   🔹 Removed from document flow
+
   - position: sticky (Hybrid ⭐)
 
   ```
@@ -247,28 +315,89 @@ Explanation:
 + nth-child vs nth-of-type
 
 Explanation:
-+ One counts all nodes; the other counts element type.
+- :nth-child() selects an element based on its position among all sibling elements.
+- :nth-of-type() selects an element based on its position among siblings of the same HTML element
+
+- :nth-child()
+- It selects an element based on its position among all sibling elements.
+
+HTML:
+```<div>
+  <p>Paragraph 1</p>
+  <h2>Heading</h2>
+  <p>Paragraph 2</p>
+  <p>Paragraph 3</p>
+</div>
+```
+
+
+CSS:
+```
+p:nth-child(2) {
+  color: red;
+}
+```
+- Output: No paragraph will become red.
+  - Because the second child is an h2, not a p.
+
+- :nth-of-type()
+- It selects an element based on its position among siblings of the same HTML element type.
 
 ```
-li:nth-child(2) { color: red; }
-p:nth-of-type(2) { color: blue; }
+p:nth-of-type(2) {
+  color: red;
+}
 ```
+- Paragraph 2 becomes red.
+- Why?
+- Because nth-of-type(2) counts only the <p> elements.
 
 + Media Queries
 
 Explanation:
 - Apply styles based on device size.
+- Examples of Media Queries
+
+1: Mobile devices
 
 ```
-@media (max-width: 768px) {
-  body {
-    background: lightgray;
+/* Mobile */
+@media (max-width: 480px) {
+  .container {
+    width: 100%;
+    background-color: lightblue;
   }
 }
 ```
-+ CSS Optimization
 
-Explanation:
+Example 2: Tablets
+```
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    width: 90%;
+    background-color: lightgreen;
+  }
+}
+```
+
+Example 3: Desktop
+```
+/* Desktop */
+@media (min-width: 769px) {
+  .container {
+    width: 80%;
+    background-color: lightcoral;
+  }
+}
+```
+
+######  CSS Optimization
+- CSS optimization helps improve rendering performance, maintainability, and user experience.
+
+1. Avoid unnecessary CSS selectors
+- Avoid writing deeply nested selectors because they make CSS harder to maintain and can increase selector matching complexity.
+
 - Avoid deep selectors.
 
 ```
@@ -279,4 +408,147 @@ Explanation:
 .list-item {}
 ```
 
+2. Remove duplicate CSS
+- Avoid repeating the same styles in multiple places.
+```
+Avoid
+.button1 {
+  background: blue;
+  padding: 10px;
+}
 
+.button2 {
+  background: blue;
+  padding: 10px;
+}
+```
+
+- Prefer
+```
+.button {
+  background: blue;
+  padding: 10px;
+}
+
+.button1 {
+  /* Additional styles */
+}
+
+.button2 {
+  /* Additional styles */
+}
+```
+
+3. Use CSS shorthand properties
+- Instead of writing multiple properties separately, use shorthand wherever appropriate.
+
+- Avoid
+```
+.box {
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+}
+```
+- Prefer
+```
+.box {
+  margin: 10px 20px;
+}
+```
+
+4. Use Flexbox and Grid instead of unnecessary positioning
+
+- Avoid using position: absolute for every layout requirement.
+- Avoid
+
+```.container {
+  position: relative;
+}
+
+.box1 {
+  position: absolute;
+  left: 20px;
+}
+
+.box2 {
+  position: absolute;
+  left: 150px;
+}
+```
+
+
+- Prefer
+```
+.container {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+```
+5. Optimize images and fonts
+
+Some best practices:
+- Use WebP or AVIF image formats where suitable.
+- Compress images without losing unnecessary quality.
+- Use lazy loading for below-the-fold images.
+- Use appropriate image dimensions.
+- Avoid loading unnecessary font weights.
+- Use modern font formats such as WOFF2.
+
+```<img
+  src="employee.webp"
+  alt="Employee"
+  loading="lazy"
+  width="300"
+  height="200"
+/>
+```
+6. Use CSS animations efficiently
+- For smoother animations, prefer transform and opacity where possible.
+- Less ideal
+```
+.box:hover {
+  left: 20px;
+  width: 200px;
+}
+```
+- Prefer
+```
+.box {
+  transition: transform 0.3s ease;
+}
+
+.box:hover {
+  transform: translateX(20px);
+}
+```
+
+Why?
+
+- transform and opacity can often be handled efficiently by the browser's compositing process, whereas properties such as width, height, and positional layout properties can trigger layout or painting work.
+
+7. Use CSS media queries for responsive design
+8. Remove unused CSS
+9. Minify CSS
+- Minification removes unnecessary whitespace and comments from CSS files.
+10. Use CSS variables
+- CSS variables help maintain consistent styles and reduce repeated values.
+```
+:root {
+  --primary-color: blue;
+  --spacing: 16px;
+}
+
+.button {
+  background: var(--primary-color);
+  padding: var(--spacing);
+}
+
+.card {
+  border-color: var(--primary-color);
+  padding: var(--spacing);
+}
+```
+- This improves maintainability, especially in large React applications.
